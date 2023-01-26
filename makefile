@@ -1,24 +1,21 @@
-PROJ_NAME=rest_operations
-C_SOURCE=$(wildcard *.c)
-H_SOURCE=$(wildcard *.h)
-OBJ=$(C_SOURCE:.c=.o)
 CC=gcc
-CC_FLAGS=-c         \
-         -W         \
-         -Wall      \
-         -pedantic 	\
-		 -lssl -lcrypto
+#CCFLAGS=-Wall
+CCFLAGS=-g
+LDFLAGS=-lm
+SOURCES=$(wildcard *.c)
+OBJECTS=$(SOURCES:.c=.o)
+TARGET=rest_operations
 
-all: $(PROJ_NAME)
+all: $(TARGET)
 
-$(PROJ_NAME): $(OBJ)
-	$(CC) $(OBJ) -o $@ $(CC_FLAGS)
+$(TARGET): $(OBJECTS);\
+    $(CC) -g -o $@ $^ $(LDFLAGS) -lssl -lcrypto
 
-%.o: %.c $(H_SOURCE)
-	$(CC) $< -o $@ $(CC_FLAGS)
+%.o: %.c %.h;\
+    $(CC) $(CCFLAGS) -lssl -lcrypto -c $<
 
-clean:
-	rm -rf *.o $(PROJ_NAME)
+%.o: %.c;\
+    $(CC) $(CCFLAGS) -lssl -lcrypto -c $<
 
-run:
-	gcc -o main rest_operations.o http_methods.o -lssl -lcrypto
+clean:;\
+    rm -f *.o $(TARGET);\
